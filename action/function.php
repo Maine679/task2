@@ -86,7 +86,7 @@ function login(string $email,string $password) :bool {
     }
 
     //Считаем что он авторизован если у нас есть его данные. Нет смысла проверять каждый раз логин и пароль.
-    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_email'] = $user['email'];
 
     return true;
 }
@@ -100,12 +100,28 @@ function login(string $email,string $password) :bool {
  *
  */
 function is_authorized() :bool {
-    if(isset($_SESSION['user_id']))
+    if(isset($_SESSION['user_email']))
         return true;
 
     return false;
 }
 
+
+/*
+ * Parameter: void
+ *
+ * Description: Получает все данные пользователей для отображения списка пользователей.
+ *
+ * Return: Array user| bool false
+ */
+function get_all_user() {
+
+    $pdo = new PDO('mysql:host=localhost;dbname=task2', 'mysql','mysql');
+    $statment = $pdo->query('SELECT * FROM users;');
+    $user = $statment->fetchAll(PDO::FETCH_ASSOC);
+
+    return $user;
+}
 
 
 

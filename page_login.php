@@ -45,7 +45,6 @@ require_once "action/function.php";
             <?
             if($_SESSION['danger'])
                 display_flash_message('danger');
-
             ?>
 
 
