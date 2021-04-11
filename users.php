@@ -50,6 +50,12 @@ $user = get_user_by_email($_SESSION['user_email']);
 <!--            <div class="alert alert-success">-->
 <!--                Профиль успешно обновлен.-->
 <!--            </div>-->
+
+            <?
+            if($_SESSION['danger'])
+                display_flash_message('danger');
+            ?>
+
             <div class="subheader">
                 <h1 class="subheader-title">
                     <i class='subheader-icon fal fa-users'></i> Список пользователей
@@ -135,16 +141,16 @@ $user = get_user_by_email($_SESSION['user_email']);
                                 <a href="mailto:<? echo $item['email']; ?>" class="mt-1 d-block fs-sm fw-400 text-dark">
                                     <i class="fas fa-mouse-pointer text-muted mr-2"></i><? echo $item['email']; ?></a>
                                 <address class="fs-sm fw-400 mt-4 text-muted">
-                                    <i class="fas fa-map-pin mr-2"></i><? echo $item['address']; ?>></address>
+                                    <i class="fas fa-map-pin mr-2"></i><? echo $item['address']; ?></address>
                                 <div class="d-flex flex-row">
                                     <a href="javascript:void(0);" class="mr-2 fs-xxl" style="color:#4680C2">
-                                        <i class="fab fa-vk"></i>
+                                        <i class="fab fa-vk"><? echo $item['social_link']; ?></i>
                                     </a>
                                     <a href="javascript:void(0);" class="mr-2 fs-xxl" style="color:#38A1F3">
-                                        <i class="fab fa-telegram"></i>
+                                        <i class="fab fa-telegram"><? echo $item['telegram']; ?></i>
                                     </a>
                                     <a href="javascript:void(0);" class="mr-2 fs-xxl" style="color:#E1306C">
-                                        <i class="fab fa-instagram"></i>
+                                        <i class="fab fa-instagram"><? echo $item['instagram']; ?></i>
                                     </a>
                                 </div>
                             </div>

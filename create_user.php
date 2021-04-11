@@ -1,3 +1,22 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+$user = get_user_by_email($_SESSION['user_email']);
+
+if($user['user_status'] !== 'admin') { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
+    set_flash_message('danger','У вас недостаточно прав.');
+    redirect_to('users.php');
+}
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +42,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="page_login.php">Войти</a>-->
+<!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.php">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="page_login.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -37,11 +56,17 @@
             <h1 class="subheader-title">
                 <i class='subheader-icon fal fa-plus-circle'></i> Добавить пользователя
             </h1>
-
-
-
         </div>
-        <form action="">
+
+
+        <?
+        if($_SESSION['danger'])
+            display_flash_message('danger');
+        ?>
+
+
+
+        <form action="action/action_create_user.php" method="post">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -53,25 +78,25 @@
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" class="form-control">
+                                    <input type="text" id="simpleinput" name="name" class="form-control">
                                 </div>
 
                                 <!-- title -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Место работы</label>
-                                    <input type="text" id="simpleinput" class="form-control">
+                                    <input type="text" id="simpleinput" name="position" class="form-control">
                                 </div>
 
                                 <!-- tel -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Номер телефона</label>
-                                    <input type="text" id="simpleinput" class="form-control">
+                                    <input type="text" id="simpleinput" name="phone" class="form-control">
                                 </div>
 
                                 <!-- address -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Адрес</label>
-                                    <input type="text" id="simpleinput" class="form-control">
+                                    <input type="text" id="simpleinput" name="address" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -88,20 +113,20 @@
                                 <!-- email -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Email</label>
-                                    <input type="text" id="simpleinput" class="form-control">
+                                    <input type="text" id="simpleinput" name="email" class="form-control">
                                 </div>
 
                                 <!-- password -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Пароль</label>
-                                    <input type="password" id="simpleinput" class="form-control">
+                                    <input type="password" id="simpleinput" name="password" class="form-control">
                                 </div>
 
                                 
                                 <!-- status -->
                                 <div class="form-group">
                                     <label class="form-label" for="example-select">Выберите статус</label>
-                                    <select class="form-control" id="example-select">
+                                    <select class="form-control" name="status" id="example-select">
                                         <option>Онлайн</option>
                                         <option>Отошел</option>
                                         <option>Не беспокоить</option>
@@ -110,7 +135,7 @@
 
                                 <div class="form-group">
                                     <label class="form-label" for="example-fileinput">Загрузить аватар</label>
-                                    <input type="file" id="example-fileinput" class="form-control-file">
+                                    <input type="file" id="example-fileinput" name="photo" class="form-control-file">
                                 </div>
                             </div>
                         </div>
@@ -137,7 +162,7 @@
                                                     </span>
                                                 </span>
                                             </div>
-                                            <input type="text" class="form-control border-left-0 bg-transparent pl-0">
+                                            <input type="text" name="social_link" class="form-control border-left-0 bg-transparent pl-0">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -151,7 +176,7 @@
                                                     </span>
                                                 </span>
                                             </div>
-                                            <input type="text" class="form-control border-left-0 bg-transparent pl-0">
+                                            <input type="text" name="telegram" class="form-control border-left-0 bg-transparent pl-0">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -165,7 +190,7 @@
                                                     </span>
                                                 </span>
                                             </div>
-                                            <input type="text" class="form-control border-left-0 bg-transparent pl-0">
+                                            <input type="text" name="instagram" class="form-control border-left-0 bg-transparent pl-0">
                                         </div>
                                     </div>
                                     <div class="col-md-12 mt-3 d-flex flex-row-reverse">
