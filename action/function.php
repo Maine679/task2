@@ -51,13 +51,14 @@ function set_flash_message($name, $message) :void {
  * Return value: void
 */
 function display_flash_message($name) : void {
-
+    echo '<div class="alert alert-' . $name . ' text-dark" role="alert">'. $_SESSION[$name] . '</div>';
+    unset($_SESSION[$name]);
 }
 
 /*
  * Parameter: Путь по которому требуется перейти
  *
- * Description Переводит на указанную страницу
+ * Description: Переводит на указанную страницу
  *
  * Return: void
  */

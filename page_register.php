@@ -1,4 +1,7 @@
-<?php session_start() ?>
+<?php
+session_start();
+require_once "action/function.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,14 +64,10 @@
                             <div class="col-xl-6 ml-auto mr-auto">
                                 <div class="card p-4 rounded-plus bg-faded">
 
-
-                                    <? if($_SESSION['danger']): ?>
-                                        <div class="alert alert-danger text-dark" role="alert">
-                                        <? echo $_SESSION['danger'];
-                                        unset($_SESSION['danger']);
-                                        ?>
-                                        </div>
-                                    <? endif; ?>
+                                    <?
+                                    if($_SESSION['danger'])
+                                        display_flash_message('danger');
+                                    ?>
 
 
                                     <form id="js-login" novalidate="" action="action/action_registration.php" method="post">
