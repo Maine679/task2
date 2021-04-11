@@ -8,7 +8,7 @@ session_start();
  *
  * Return value: Возвращаем массив данных пользователя или boolean(false)
 */
-function get_user_by_email($email) {
+function get_user_by_email(string $email) {
     $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
     $statment = $pdo->prepare("SELECT * FROM users WHERE email=:email;");
     $statment->execute(['email'=>$email]);
@@ -25,7 +25,7 @@ function get_user_by_email($email) {
  *
  * Return value: void
 */
-function add_user($email, $password) :void {
+function add_user(string $email,string $password) :void {
     $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
     $statment = $pdo->prepare('INSERT INTO users (email, password) values (:email,:password);');
 
@@ -40,7 +40,7 @@ function add_user($email, $password) :void {
  *
  * Return value: void
 */
-function set_flash_message($name, $message) :void {
+function set_flash_message(string $name,string $message) :void {
     $_SESSION[$name] = $message;
 }
 /*
@@ -50,7 +50,7 @@ function set_flash_message($name, $message) :void {
  *
  * Return value: void
 */
-function display_flash_message($name) : void {
+function display_flash_message(string $name) : void {
     echo '<div class="alert alert-' . $name . ' text-dark" role="alert">'. $_SESSION[$name] . '</div>';
     unset($_SESSION[$name]);
 }
@@ -62,13 +62,49 @@ function display_flash_message($name) : void {
  *
  * Return: void
  */
-function redirect_to($path) :void {
+function redirect_to(string $path) :void {
     header("Location: $path");
     exit;
 }
 
+/*
+ * Parameter:
+ *          string $email
+ *          string $password
+ *
+ * Description: Производит авторизацию пользователей в систему
+ *
+ * Return: boolean true/false
+ */
+function login(string $email,string $password) :bool {
 
+    $user = get_user_by_email($email);
+    if(!$user || !password_verify($password, $user['password'])) {
 
+        set_flash_message('danger','Данные введены не правильные.');
+        return false;
+    }
+
+    //Считаем что он авторизован если у нас есть его данные. Нет смысла проверять каждый раз логин и пароль.
+    $_SESSION['user_id'] = $user['id'];
+
+    return true;
+}
+
+/*
+ * Parameter: void
+ *
+ * Description: Проверяет авторизован пользователь или нет.
+ *
+ * Return: boolean
+ *
+ */
+function is_authorized() :bool {
+    if(isset($_SESSION['user_id']))
+        return true;
+
+    return false;
+}
 
 
 

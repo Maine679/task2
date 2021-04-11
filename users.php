@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

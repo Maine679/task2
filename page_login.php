@@ -42,15 +42,21 @@ require_once "action/function.php";
                 display_flash_message('success');
             ?>
 
+            <?
+            if($_SESSION['danger'])
+                display_flash_message('danger');
 
-            <form action="">
+            ?>
+
+
+            <form action="action/action_login.php" method="post">
                 <div class="form-group">
                     <label class="form-label" for="username">Email</label>
-                    <input type="email" id="username" class="form-control" placeholder="Эл. адрес" value="">
+                    <input type="email" id="username" class="form-control" name="email" placeholder="Эл. адрес" value="">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Пароль</label>
-                    <input type="password" id="password" class="form-control" placeholder="" >
+                    <input type="password" id="password" class="form-control" name="password" placeholder="" >
                 </div>
                 <div class="form-group text-left">
                     <div class="custom-control custom-checkbox">
