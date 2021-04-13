@@ -14,8 +14,6 @@ if($user['user_status'] !== 'admin') { //Проверка на всякий сл
     redirect_to('users.php');
 }
 
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +64,7 @@ if($user['user_status'] !== 'admin') { //Проверка на всякий сл
 
 
 
-        <form action="action/action_create_user.php" method="post">
+        <form action="action/action_create_user.php" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -78,25 +76,25 @@ if($user['user_status'] !== 'admin') { //Проверка на всякий сл
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" name="name" class="form-control">
+                                    <input type="text" id="simpleinput" name="name" class="form-control <? display_form_warning('name') ?>" role="alert">
                                 </div>
 
                                 <!-- title -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Место работы</label>
-                                    <input type="text" id="simpleinput" name="position" class="form-control">
+                                    <input type="text" id="simpleinput" name="position" class="form-control <? display_form_warning('position') ?>" role="alert">
                                 </div>
 
                                 <!-- tel -->
                                 <div class="form-group">
-                                    <label class="form-label" for="simpleinput">Номер телефона</label>
-                                    <input type="text" id="simpleinput" name="phone" class="form-control">
+                                    <label class="form-label " for="simpleinput"  >Номер телефона</label>
+                                    <input type="text" id="simpleinput" name="phone" class="form-control <? display_form_warning('phone') ?>" role="alert">
                                 </div>
 
                                 <!-- address -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Адрес</label>
-                                    <input type="text" id="simpleinput" name="address" class="form-control">
+                                    <input type="text" id="simpleinput" name="address" class="form-control <? display_form_warning('address') ?>" role="alert">
                                 </div>
                             </div>
                         </div>
@@ -113,16 +111,16 @@ if($user['user_status'] !== 'admin') { //Проверка на всякий сл
                                 <!-- email -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Email</label>
-                                    <input type="text" id="simpleinput" name="email" class="form-control">
+                                    <input type="text" id="simpleinput" name="email" class="form-control <? display_form_warning('email') ?>" role="alert">
                                 </div>
 
                                 <!-- password -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Пароль</label>
-                                    <input type="password" id="simpleinput" name="password" class="form-control">
+                                    <input type="password" id="simpleinput" name="password" class="form-control <? display_form_warning('password') ?>" role="alert">
                                 </div>
 
-                                
+
                                 <!-- status -->
                                 <div class="form-group">
                                     <label class="form-label" for="example-select">Выберите статус</label>

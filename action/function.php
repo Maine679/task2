@@ -25,13 +25,15 @@ function get_user_by_email(string $email) {
  *
  * Return value: void
 */
-function add_user(string $email,string $password) :void {
+function add_user(string $email,string $password) :int {
     $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
     $statment = $pdo->prepare('INSERT INTO users (email, password) values (:email,:password);');
 
     $hashPassowrd = password_hash($password,PASSWORD_DEFAULT );
 
     $statment->execute(['email'=>$email,'password' => $hashPassowrd]);
+    $id = $pdo->lastInsertId();
+    return $id;
 }
 /*
  * Parameter: Имя ключа, сообщение которое будет в него записано
@@ -53,6 +55,44 @@ function set_flash_message(string $name,string $message) :void {
 function display_flash_message(string $name) : void {
     echo '<div class="alert alert-' . $name . ' text-dark" role="alert">'. $_SESSION[$name] . '</div>';
     unset($_SESSION[$name]);
+}
+
+/*
+ * Parameter: Принимает наименование параметра
+ *
+ * Description: Выводит класс для визуального отображения ошибки.
+ *
+ * Return value: void
+*/
+function display_form_warning(string $name) : void {
+    if(isset($_SESSION['danger_' . $name])) {
+        echo 'alert alert-danger';
+        unset($_SESSION['danger_' . $name]);
+        unset($_SESSION['danger_message']);
+    }
+}
+/*
+ * Parameter: string наименование параметра
+ *
+ * Description: Устанавливает информацию что бы вывести предупреждение о незаполненном поле
+ *
+ * Return value: void
+*/
+function set_form_warning(string $name) :void {
+    $_SESSION['danger_' . $name] = 1;
+    $_SESSION['danger_message'] = 1;
+}
+/*
+ * Parameter: void
+ *
+ * Description: Возвращает установлена ошибка незаполненных полей или нет.
+ *
+ * Return value: void
+*/
+function get_form_warning() :bool {
+    if(isset($_SESSION['danger_message']))
+        return true;
+    return false;
 }
 
 /*
@@ -124,10 +164,112 @@ function get_all_user() {
 }
 
 
+/*
+ * Parameter: string $name, string $position, string $address, string $phone, int $id
+ *
+ * Description: Устанавливает дополнительные поля для пользователей в бд. Имя, позиция, телефон, адрес.
+ *
+ * Return: void
+ */
+function write_db_user_data(string $name, string $position, string $address, string $phone, int $id) : void {
+
+    $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
+    $statment = $pdo->prepare("UPDATE users SET name=:name, phone=:phone, address=:address, position=:position WHERE id=:idUser");
+
+    $statment->execute([
+        'name'=>$name,
+        'phone'=>$phone,
+        'address'=>$address,
+        'position'=>$position,
+        'idUser'=>$id
+    ]);
+}
+/*
+ * Parameter: int $status, int $id
+ *
+ * Description: Устанавливает значение поля статус в бд
+ *
+ * Return: void
+ */
+function write_db_user_status(int $status, int $id) :void {
+    $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
+    $statment = $pdo->prepare("UPDATE users SET status=:status WHERE id=:idUser");
+
+    $statment->execute([
+        'status'=>$status,
+        'idUser'=>$id
+    ]);
+}
+
+/*
+ * Parameter: array PhotoData[]
+ *
+ * Description: Для загрузки картинки на сервер
+ *
+ * Return: string $fileLocation
+ */
+function upload_photo($photo) :string {
+    $tmpName = $photo['tmp_name'];
+    $error = $photo['error'];
+
+    if($error) {
+        set_flash_message('danger','При загрузки изображения что-то пошло не так, попробуйте ещё раз.');
+        redirect_to('../create_user.php');
+    }
+
+    $fi = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = (string) finfo_file($fi, $tmpName);
 
 
+    if (strpos($mime, 'image') === false) {
+        set_flash_message('danger','Можно загружать только изображения.');
+        redirect_to('../create_user.php');
+    }
 
+    $image = getimagesize($tmpName);
+    $format = image_type_to_extension($image[2]);
 
+    $newFileName = 'img_' . md5(microtime()) . $format;
+    if (!move_uploaded_file($tmpName,'W:\domains\task2\img\demo\avatars\\' . $newFileName)) {
+        set_flash_message('danger','При загрузке произошла ошибка, попробуйте ещё раз.');
+        redirect_to('../create_user.php');
+    }
 
+    return $newFileName;
+}
 
+/*
+ * Parameter: string $fileName, int $id
+ *
+ * Description: Для записи картинки пользователю в бд
+ *
+ * Return: void
+ */
+function write_db_user_image(string $image ,int $id) :void {
+    $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
+    $statment = $pdo->prepare("UPDATE users SET avatar=:image WHERE id=:idUser");
 
+    $statment->execute([
+        'image'=>$image,
+        'idUser'=>$id
+    ]);
+}
+
+/*
+ * Parameter: string $social_link,string $telegram,string $instagram, int $id
+ *
+ * Description: Для записи социальных ссылок пользователя в бд.
+ *
+ * Return: void
+ */
+function write_db_user_social_link(string $social_link,string $telegram,string $instagram, int $id) : void {
+    $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
+    $statment = $pdo->prepare("UPDATE users SET social_link=:social_link, instagram=:instagram, telegram=:telegram WHERE id=:idUser");
+
+    $statment->execute([
+        'social_link'=>$social_link,
+        'instagram'=>$instagram,
+        'telegram'=>$telegram,
+        'idUser'=>$id
+    ]);
+}
