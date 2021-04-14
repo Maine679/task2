@@ -15,6 +15,7 @@ $user = get_user_by_email($_SESSION['user_email']);
 
 //Получаем идентификатор редактируемого пользователя.
 $idUser = $_SESSION['edit_user_id'];
+unset($_SESSION['edit_user_id']);
 
 if($user['user_status'] !== 'admin' && !is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
     set_flash_message('danger','У вас недостаточно прав.');

@@ -1,3 +1,40 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+$user = get_user_by_email($_SESSION['user_email']);
+
+//Получаем идентификатор редактируемого пользователя.
+$idUser = $_GET['id'];
+
+
+if($user['user_status'] !== 'admin' && !is_author((int)$user['id'],(int)$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
+    set_flash_message('danger','У вас недостаточно прав.');
+    redirect_to('users.php');
+}
+
+
+if(empty($idUser)) {
+    set_flash_message('danger','Требуется выбрать пользователя для редактирования');
+    redirect_to('users.php');
+}
+$arrUser = get_user_by_id($idUser);
+
+if($arrUser['error']) { //На случай если пользователь вдруг исчезнет, или если зададут ид через гет параметр которого нет в базе.
+    set_flash_message('danger','При получении пользователя возникла ошибка.');
+    redirect_to('users.php');
+}
+
+
+//Для передачи идентификатора в обработчик.
+$_SESSION['edit_user_id'] = $idUser;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,15 +55,15 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Главная <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="users.php">Главная <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="page_login.php">Войти</a>-->
+<!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.php">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="page_login.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +75,13 @@
             </h1>
 
         </div>
-        <form action="">
+
+        <?
+        if($_SESSION['danger'])
+            display_flash_message('danger');
+        ?>
+
+        <form action="action/action_security.php" method="post">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -50,19 +93,19 @@
                                 <!-- email -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Email</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="john@example.com">
+                                    <input type="text" name="email" id="simpleinput" class="form-control <? display_form_warning('email') ?>" role="alert" value="<?  echo empty($_SESSION['edit_email']) ? $arrUser['email']:$_SESSION['edit_email']; unset($_SESSION['edit_email']); ?>">
                                 </div>
 
                                 <!-- password -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Пароль</label>
-                                    <input type="password" id="simpleinput" class="form-control">
+                                    <input type="password" name="password" id="simpleinput" class="form-control <? display_form_warning('password') ?>" role="alert">
                                 </div>
 
                                 <!-- password confirmation-->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Подтверждение пароля</label>
-                                    <input type="password" id="simpleinput" class="form-control">
+                                    <input type="password" name="confirm_password" id="simpleinput" class="form-control <? display_form_warning('confirm_password') ?>" role="alert">
                                 </div>
 
 
