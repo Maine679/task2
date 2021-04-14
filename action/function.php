@@ -273,3 +273,57 @@ function write_db_user_social_link(string $social_link,string $telegram,string $
         'idUser'=>$id
     ]);
 }
+
+
+
+
+
+/*
+ * Parameter: int $id
+ *
+ * Description: Для получения данных о пользователи из базы
+ *
+ * Return: array $userData
+ */
+function get_user_by_id(int $id) :array {
+    $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
+    $statment = $pdo->prepare("SELECT * FROM users WHERE id=:idUser;");
+    $statment->execute(['idUser'=>$id]);
+
+    $count = $statment->rowCount();
+
+    if(!$count) {
+        $user['error'] = true;
+    } else {
+        $user = $statment->fetch(PDO::FETCH_ASSOC);
+        $user['error'] = false;
+    }
+
+    return $user;
+}
+
+/*
+ * Parameter: int $id_logged, int $idUser
+ *
+ * Description: Проверяет равны ли идентификаторы? Не понял пока зачем эту функцию делать
+ *
+ * Return: boolean
+ */
+function is_author(int $id_logged,int $idUser) :bool {
+
+    if($id_logged == $idUser) {
+        return true;
+    }
+
+    return false;
+}
+
+
+
+
+//Написал редактирование, подумал о том что нужно учесть возможность попадания на страницу action просто запросом, по этому дублировал проверки на права доступа в файле action
+
+
+
+
+

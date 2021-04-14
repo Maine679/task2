@@ -54,6 +54,9 @@ $user = get_user_by_email($_SESSION['user_email']);
             <?
             if($_SESSION['danger'])
                 display_flash_message('danger');
+
+            if($_SESSION['success'])
+                display_flash_message('success');
             ?>
 
             <div class="subheader">

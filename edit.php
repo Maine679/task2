@@ -1,3 +1,40 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+$user = get_user_by_email($_SESSION['user_email']);
+
+//Получаем идентификатор редактируемого пользователя.
+$idUser = $_GET['id'];
+
+
+if($user['user_status'] !== 'admin' && is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
+    set_flash_message('danger','У вас недостаточно прав.');
+    redirect_to('users.php');
+}
+
+
+if(empty($idUser)) {
+    set_flash_message('danger','Требуется выбрать пользователя для редактирования');
+    redirect_to('users.php');
+}
+$arrUser = get_user_by_id($idUser);
+
+if($arrUser['error']) { //На случай если пользователь вдруг исчезнет, или если зададут ид через гет параметр которого нет в базе.
+    set_flash_message('danger','При получении пользователя возникла ошибка.');
+    redirect_to('users.php');
+}
+
+
+//Для передачи идентификатора в обработчик.
+$_SESSION['edit_user_id'] = $idUser;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,15 +55,15 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Главная <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="users.php">Главная <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="page_login.php">Войти</a>-->
+<!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.php">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="page_login.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +75,15 @@
             </h1>
 
         </div>
-        <form action="">
+
+        <?
+        if($_SESSION['danger'])
+            display_flash_message('danger');
+        if($_SESSION['success'])
+            display_flash_message('success');
+        ?>
+
+        <form action="action/action_edit.php" method="post">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -50,25 +95,25 @@
                                 <!-- username -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Имя</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Иван иванов">
+                                    <input type="text" id="simpleinput" name="name" class="form-control <? display_form_warning('name') ?>" role="alert" value="<? echo $arrUser['name']; ?>">
                                 </div>
 
                                 <!-- title -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Место работы</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Marlin Веб-разработчик">
+                                    <input type="text" id="simpleinput" name="position" class="form-control <? display_form_warning('position') ?>" role="alert" value="<? echo $arrUser['position']; ?>">
                                 </div>
 
                                 <!-- tel -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Номер телефона</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="8 888 8888 88">
+                                    <input type="text" id="simpleinput" name="phone" class="form-control <? display_form_warning('phone') ?>" role="alert" value="<? echo $arrUser['phone']; ?>">
                                 </div>
 
                                 <!-- address -->
                                 <div class="form-group">
                                     <label class="form-label" for="simpleinput">Адрес</label>
-                                    <input type="text" id="simpleinput" class="form-control" value="Восточные Королевства, Штормград">
+                                    <input type="text" id="simpleinput" name="address" class="form-control <? display_form_warning('address') ?>" role="alert" value="<? echo $arrUser['address']; ?>">
                                 </div>
                                 <div class="col-md-12 mt-3 d-flex flex-row-reverse">
                                     <button class="btn btn-warning">Редактировать</button>
