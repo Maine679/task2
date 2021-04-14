@@ -90,15 +90,15 @@ $user = get_user_by_email($_SESSION['user_email']);
                     <? $arrAlluser = get_all_user();
                     foreach ($arrAlluser as $item) : ?>
 
-                    <div id="c_<? echo $item['id'] ?>" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<? echo $item['name'] . " " . $item['surname']; ?>">
+                    <div id="c_<? echo $item['id'] ?>" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<? echo $item['name'] . ' ' . $item['surname']; ?>">
                         <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                             <div class="d-flex flex-row align-items-center">
                                 <span class="status status-success mr-3">
                                     <span class="rounded-circle profile-image d-block " style="background-image:url('img/demo/avatars/<? echo $item['avatar'] ?>'); background-size: cover;"></span>
                                 </span>
                                 <div class="info-card-text flex-1">
-                                    <a href="javascript:void(0);" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">
-                                        <? echo $item['name'] . " " . $item['surname']; ?>
+                                    <a href="" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">
+                                        <? echo $item['name']; ?>
                                         <? if($user['id'] == $item['id'] || $user['user_status'] == 'admin'): ?>
                                         <i class="fal fas fa-cog fa-fw d-inline-block ml-1 fs-md"></i>
                                         <i class="fal fa-angle-down d-inline-block ml-1 fs-md"></i>
@@ -106,8 +106,11 @@ $user = get_user_by_email($_SESSION['user_email']);
                                     </a>
 
 
+                                    <div class="dropdown-menu">
                                     <? if($user['id'] == $item['id'] || $user['user_status'] == 'admin'): ?>
-                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="page_profile.php?id=<? echo $item['id'] ?>">
+                                                <i class="fa fa-edit"></i>
+                                            Просмотреть</a>
                                             <a class="dropdown-item" href="edit.php?id=<? echo $item['id'] ?>">
                                                 <i class="fa fa-edit"></i>
                                             Редактировать</a>
@@ -125,8 +128,12 @@ $user = get_user_by_email($_SESSION['user_email']);
                                                 <i class="fa fa-window-close"></i>
                                                 Удалить
                                             </a>
-                                        </div>
+                                    <? else: ?>
+                                        <a class="dropdown-item" href="page_profile.php?id=<? echo $item['id'] ?>">
+                                            <i class="fa fa-edit"></i>
+                                        Просмотреть</a>
                                     <? endif; ?>
+                                    </div>
 
 
                                     <span class="text-truncate text-truncate-xl"><? echo $item['position'] ?></span>

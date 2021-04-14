@@ -13,7 +13,7 @@ $user = get_user_by_email($_SESSION['user_email']);
 $idUser = $_GET['id'];
 
 
-if($user['user_status'] !== 'admin' && is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
+if($user['user_status'] !== 'admin' && !is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
     set_flash_message('danger','У вас недостаточно прав.');
     redirect_to('users.php');
 }

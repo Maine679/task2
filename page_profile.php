@@ -1,3 +1,28 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+
+$idUser = $_GET['id'];
+
+if(empty($idUser)) {
+    set_flash_message('danger','Требуется выбрать пользователя для просмотра');
+    redirect_to('users.php');
+}
+$arrUser = get_user_by_id($idUser);
+
+if($arrUser['error']) { //На случай если пользователь вдруг исчезнет, или если зададут ид через гет параметр которого нет в базе.
+    set_flash_message('danger','При получении пользователя возникла ошибка.');
+    redirect_to('users.php');
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,15 +44,15 @@
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link" href="#">Главная</a>
+                        <a class="nav-link" href="users.php">Главная</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" href="#">Войти</a>-->
+<!--                    </li>-->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Войти</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Выйти</a>
+                        <a class="nav-link" href="page_login.php">Выйти</a>
                     </li>
                 </ul>
             </div>
@@ -35,7 +60,7 @@
         <main id="js-page-content" role="main" class="page-content mt-3">
             <div class="subheader">
                 <h1 class="subheader-title">
-                    <i class='subheader-icon fal fa-user'></i> Иван Иванов
+                    <i class='subheader-icon fal fa-user'></i> <? echo $arrUser['name']; ?>
                 </h1>
             </div>
             <div class="row">
@@ -45,20 +70,20 @@
                         <div class="row no-gutters row-grid">
                             <div class="col-12">
                                 <div class="d-flex flex-column align-items-center justify-content-center p-4">
-                                    <img src="img/demo/avatars/avatar-admin-lg.png" class="rounded-circle shadow-2 img-thumbnail" alt="">
+                                    <img src="img/demo/avatars/<? echo $arrUser['avatar']; ?>" class="rounded-circle shadow-2 img-thumbnail" alt="<? echo $arrUser['name']; ?>">
                                     <h5 class="mb-0 fw-700 text-center mt-3">
-                                        Иван Иванов 
-                                        <small class="text-muted mb-0">Toronto, Canada</small>
+                                        <? echo $arrUser['name']; ?>
+                                        <small class="text-muted mb-0"><? echo $arrUser['address']; ?></small>
                                     </h5>
                                     <div class="mt-4 text-center demo">
                                         <a href="javascript:void(0);" class="fs-xl" style="color:#C13584">
-                                            <i class="fab fa-instagram"></i>
+                                            <i class="fab fa-instagram"><? echo $arrUser['instagram']; ?></i>
                                         </a>
                                         <a href="javascript:void(0);" class="fs-xl" style="color:#4680C2">
-                                            <i class="fab fa-vk"></i>
+                                            <i class="fab fa-vk"><? echo $arrUser['social_link']; ?></i>
                                         </a>
                                         <a href="javascript:void(0);" class="fs-xl" style="color:#0088cc">
-                                            <i class="fab fa-telegram"></i>
+                                            <i class="fab fa-telegram"><? echo $arrUser['telegram']; ?></i>
                                         </a>
                                     </div>
                                 </div>
@@ -66,11 +91,11 @@
                             <div class="col-12">
                                 <div class="p-3 text-center">
                                     <a href="tel:+13174562564" class="mt-1 d-block fs-sm fw-400 text-dark">
-                                        <i class="fas fa-mobile-alt text-muted mr-2"></i> +1 317-456-2564</a>
+                                        <i class="fas fa-mobile-alt text-muted mr-2"></i><? echo $arrUser['phone']; ?></a>
                                     <a href="mailto:oliver.kopyov@marlin.ru" class="mt-1 d-block fs-sm fw-400 text-dark">
-                                        <i class="fas fa-mouse-pointer text-muted mr-2"></i> oliver.kopyov@marlin.ru</a>
+                                        <i class="fas fa-mouse-pointer text-muted mr-2"></i><? echo $arrUser['email']; ?></a>
                                     <address class="fs-sm fw-400 mt-4 text-muted">
-                                        <i class="fas fa-map-pin mr-2"></i> Восточные Королевства, Штормград 15
+                                        <i class="fas fa-map-pin mr-2"></i><? echo $arrUser['address']; ?>
                                     </address>
                                 </div>
                             </div>
