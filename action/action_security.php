@@ -94,7 +94,7 @@ if(is_author((int)$user['id'],(int)$idUser)) {
 
 
 set_flash_message('success','Данные пользователя успешно обновлены.');
-redirect_to('../users.php');
+redirect_to('../page_profile.php?id='.$arrUser['id']);
 
 
 
