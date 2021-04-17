@@ -1,3 +1,41 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+$user = get_user_by_email($_SESSION['user_email']);
+
+//Получаем идентификатор редактируемого пользователя.
+$idUser = $_GET['id'];
+
+
+if($user['user_status'] !== 'admin' && !is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
+    set_flash_message('danger','У вас недостаточно прав.');
+    redirect_to('users.php');
+}
+
+
+if(empty($idUser)) {
+    set_flash_message('danger','Требуется выбрать пользователя для редактирования');
+    redirect_to('users.php');
+}
+$arrUser = get_user_by_id($idUser);
+
+if($arrUser['error']) { //На случай если пользователь вдруг исчезнет, или если зададут ид через гет параметр которого нет в базе.
+    set_flash_message('danger','При получении пользователя возникла ошибка.');
+    redirect_to('users.php');
+}
+
+
+//Для передачи идентификатора в обработчик.
+$_SESSION['edit_user_id'] = $idUser;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,15 +56,15 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Главная <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="users.php">Главная <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="page_login.php">Войти</a>-->
+<!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.php">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="page_login.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +76,7 @@
             </h1>
 
         </div>
-        <form action="">
+        <form action="action/action_status.php" method="post">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -50,12 +88,24 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <!-- status -->
+
+                                        <?
+
+                                            $arrStatus = [
+                                                'online'=>'Онлайн',
+                                                'ofline'=>'Офлайн',
+                                                'eway'=>'Отошел',
+                                                'notdisturb'=>'Не беспокоить'
+                                            ];
+                                        ?>
+
+
                                         <div class="form-group">
                                             <label class="form-label" for="example-select">Выберите статус</label>
-                                            <select class="form-control" id="example-select">
-                                                <option>Онлайн</option>
-                                                <option>Отошел</option>
-                                                <option>Не беспокоить</option>
+                                            <select class="form-control" id="example-select" name="status">
+                                                <? foreach ($arrStatus as $key => $value): ?>
+                                                    <option value="<? echo $key; ?>" <? echo $key == $arrUser['status'] ? 'selected':''; ?>><? echo $value; ?></option>
+                                                <? endforeach; ?>
                                             </select>
                                         </div>
                                     </div>

@@ -185,13 +185,25 @@ function write_db_user_data(string $name, string $position, string $address, str
     ]);
 }
 /*
- * Parameter: int $status, int $id
+ * Parameter: string $status, int $id
  *
  * Description: Устанавливает значение поля статус в бд
  *
  * Return: void
  */
-function write_db_user_status(int $status, int $id) :void {
+function write_db_user_status(string $status, int $id) :void {
+
+    $arrStatus = [
+        'online'=>'online',
+        'eway'=>'eway',
+        'ofline'=>'ofline',
+        'notdisturb'=>'notdisturb'
+    ];
+
+    if(!array_key_exists($status, $arrStatus)) {
+        $status = 'online';
+    }
+
     $pdo = new PDO("mysql:host=localhost;dbname=task2","mysql","mysql");
     $statment = $pdo->prepare("UPDATE users SET status=:status WHERE id=:idUser");
 
@@ -318,11 +330,6 @@ function is_author(int $id_logged,int $idUser) :bool {
     return false;
 }
 
-
-
-
-
-//Написал редактирование, подумал о том что нужно учесть возможность попадания на страницу action просто запросом, по этому дублировал проверки на права доступа в файле action
 
 
 

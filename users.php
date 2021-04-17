@@ -87,13 +87,21 @@ $user = get_user_by_email($_SESSION['user_email']);
             <div class="row" id="js-contacts">
                 <div class="col-xl-4">
 
-                    <? $arrAlluser = get_all_user();
+                    <?
+                    $arrStatus = [
+                        'online'=>'success',
+                        'eway'=>'warning',
+                        'ofline'=>'error',
+                        'notdisturb'=>'danger'
+                    ];
+
+                    $arrAlluser = get_all_user();
                     foreach ($arrAlluser as $item) : ?>
 
                     <div id="c_<? echo $item['id'] ?>" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="<? echo $item['name'] . ' ' . $item['surname']; ?>">
                         <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                             <div class="d-flex flex-row align-items-center">
-                                <span class="status status-success mr-3">
+                                <span class="status status-<? echo $arrStatus[$item['status']]; ?> mr-3">
                                     <span class="rounded-circle profile-image d-block " style="background-image:url('img/demo/avatars/<? echo $item['avatar'] ?>'); background-size: cover;"></span>
                                 </span>
                                 <div class="info-card-text flex-1">

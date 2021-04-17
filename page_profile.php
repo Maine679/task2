@@ -65,12 +65,27 @@ if($arrUser['error']) { //На случай если пользователь в
             </div>
             <div class="row">
               <div class="col-lg-6 col-xl-6 m-auto">
+
+                    <?
+                    if($_SESSION['success'])
+                        display_flash_message('success');
+
+
+                        $arrStatus = [
+                            'online'=>'success',
+                            'eway'=>'warning',
+                            'ofline'=>'error',
+                            'notdisturb'=>'danger'
+                        ];
+                    ?>
                     <!-- profile summary -->
                     <div class="card mb-g rounded-top">
                         <div class="row no-gutters row-grid">
                             <div class="col-12">
                                 <div class="d-flex flex-column align-items-center justify-content-center p-4">
-                                    <img src="img/demo/avatars/<? echo $arrUser['avatar']; ?>" class="rounded-circle shadow-2 img-thumbnail" alt="<? echo $arrUser['name']; ?>">
+                                    <span class="status status-<? echo $arrStatus[$arrUser['status']]; ?> mr-3">
+                                        <img src="img/demo/avatars/<? echo $arrUser['avatar']; ?>" class="rounded-circle shadow-2 img-thumbnail" alt="<? echo $arrUser['name']; ?>">
+                                    </span>
                                     <h5 class="mb-0 fw-700 text-center mt-3">
                                         <? echo $arrUser['name']; ?>
                                         <small class="text-muted mb-0"><? echo $arrUser['address']; ?></small>

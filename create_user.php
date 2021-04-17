@@ -121,13 +121,22 @@ if($user['user_status'] !== 'admin') { //Проверка на всякий сл
                                 </div>
 
 
+                                <?
+                                $arrStatus = [
+                                    'online'=>'Онлайн',
+                                    'ofline'=>'Офлайн',
+                                    'eway'=>'Отошел',
+                                    'notdisturb'=>'Не беспокоить'
+                                ];
+                                ?>
+
                                 <!-- status -->
                                 <div class="form-group">
                                     <label class="form-label" for="example-select">Выберите статус</label>
                                     <select class="form-control" name="status" id="example-select">
-                                        <option>Онлайн</option>
-                                        <option>Отошел</option>
-                                        <option>Не беспокоить</option>
+                                        <? foreach ($arrStatus as $key => $value): ?>
+                                            <option value="<? echo $key; ?>" <? echo $key == 'online' ? 'selected':''; ?>><? echo $value; ?></option>
+                                        <? endforeach; ?>
                                     </select>
                                 </div>
 
