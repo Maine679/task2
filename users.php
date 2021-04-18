@@ -132,7 +132,7 @@ $user = get_user_by_email($_SESSION['user_email']);
                                                 <i class="fa fa-camera"></i>
                                                 Загрузить аватар
                                             </a>
-                                            <a href="#" class="dropdown-item" onclick="return confirm('are you sure?');">
+                                            <a href="action/action_delete.php?id=<? echo $item['id']; ?>" class="dropdown-item" onclick="return confirm('are you sure?');">
                                                 <i class="fa fa-window-close"></i>
                                                 Удалить
                                             </a>

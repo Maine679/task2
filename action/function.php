@@ -145,7 +145,21 @@ function is_authorized() :bool {
 
     return false;
 }
+/*
+ * Parameter: void
+ *
+ * Description: Проверяет авторизован пользователь или нет.
+ *
+ * Return: void
+ *
+ */
+function logout() {
 
+    $arrUser = get_user_by_email($_SESSION['user_email']);
+    write_db_user_status('ofline',(int)$arrUser['id']);
+
+    unset($_SESSION['user_email']);
+}
 
 /*
  * Parameter: void
@@ -353,5 +367,45 @@ function has_image( $image) {
     return true;
 }
 
+/*
+ * Parameter: string $image
+ *
+ * Description: удаляет картинку в папке по заданному пути.
+ *
+ * return: boolean
+ */
+function delete_image(string $image) :bool {
 
+    if(empty($image)) {
+        return false;
+    }
 
+    $image = 'img/demo/avatars/' . $image;
+
+    if(!is_readable($image)) {
+        return false;
+    }
+
+    $res = unlink($image);
+
+    return $res;
+}
+/*
+ *Parameter: int $id
+ *
+ * Description: Удаляет пользователя из базы, возвращает true|false.
+ *
+ * return: boolean
+ */
+function delete_user(int $idUser) :bool {
+
+    $pdo = new PDO('mysql:host=localhost;dbname=task2','mysql','mysql');
+    $statment = $pdo->prepare('DELETE FROM users WHERE id=:idUser');
+    $statment->execute(['idUser'=>$idUser]);
+
+    $countRow = $statment->rowCount();
+
+    if($countRow > 0)
+        return true;
+    return false;
+}

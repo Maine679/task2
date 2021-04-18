@@ -3,6 +3,7 @@ session_start();
 require_once "function.php";
 
 
+
 if(!is_authorized()) {
     set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
     redirect_to('../page_login.php');
@@ -11,8 +12,7 @@ if(!is_authorized()) {
 $user = get_user_by_email($_SESSION['user_email']);
 
 //Получаем идентификатор редактируемого пользователя.
-$idUser = $_SESSION['edit_user_id'];
-
+$idUser = $_GET['id'];
 
 if($user['user_status'] !== 'admin' && !is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
     set_flash_message('danger','У вас недостаточно прав.');
@@ -21,7 +21,7 @@ if($user['user_status'] !== 'admin' && !is_author($user['id'],$idUser)) { //Пр
 
 
 if(empty($idUser)) {
-    set_flash_message('danger','Требуется выбрать пользователя для редактирования');
+    set_flash_message('danger','Требуется выбрать пользователя для удаления.');
     redirect_to('../users.php');
 }
 $arrUser = get_user_by_id($idUser);
@@ -31,19 +31,19 @@ if($arrUser['error']) { //На случай если пользователь в
     redirect_to('../users.php');
 }
 
+delete_image($arrUser['avatar']);
 
-$photo = $_FILES['photo'];
-if(empty($photo)) {
-    set_flash_message('danger','Вы не выбрали фотографию.');
+delete_user($idUser);
+
+if(is_author($user['id'],$idUser)) {
+
+    logout();
+    set_flash_message('success','Ваш профиль удалён');
+    redirect_to('../page_login.php');
+} else {
+    set_flash_message('success','Вы удалили профиль '. $arrUser['name']);
     redirect_to('../users.php');
 }
 
-$newFileName = upload_photo($photo);
-
-write_db_user_image( $newFileName, $idUser);
-
-delete_image($arrUser['avatar']);
 
 
-set_flash_message('success','Профиль пользователя успешно обновлён');
-redirect_to('../page_profile.php?id='.$arrUser['id']);
