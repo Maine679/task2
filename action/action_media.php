@@ -37,12 +37,12 @@ if(empty($photo)) {
     set_flash_message('danger','Вы не выбрали фотографию.');
     redirect_to('../users.php');
 }
+delete_image($arrUser['avatar']);
 
 $newFileName = upload_photo($photo);
 
 write_db_user_image( $newFileName, $idUser);
 
-delete_image($arrUser['avatar']);
 
 
 set_flash_message('success','Профиль пользователя успешно обновлён');

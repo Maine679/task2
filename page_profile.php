@@ -52,7 +52,7 @@ if($arrUser['error']) { //На случай если пользователь в
 <!--                        <a class="nav-link" href="#">Войти</a>-->
 <!--                    </li>-->
                     <li class="nav-item">
-                        <a class="nav-link" href="page_login.php">Выйти</a>
+                        <a class="nav-link" href="action/action_logout.php">Выйти</a>
                     </li>
                 </ul>
             </div>

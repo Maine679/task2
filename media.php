@@ -64,7 +64,7 @@ $_SESSION['edit_user_id'] = $idUser;
 <!--                    <a class="nav-link" href="page_login.php">Войти</a>-->
 <!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" href="users.php">Выйти</a>
+                    <a class="nav-link" href="action/action_logout.php">Выйти</a>
                 </li>
             </ul>
         </div>

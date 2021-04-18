@@ -119,8 +119,9 @@ function redirect_to(string $path) :void {
 function login(string $email,string $password) :bool {
 
     $user = get_user_by_email($email);
-    if(!$user || !password_verify($password, $user['password'])) {
 
+
+    if(empty($password) || !$user || !password_verify($password, $user['password'])) {
         set_flash_message('danger','Данные введены не правильные.');
         return false;
     }
@@ -376,11 +377,12 @@ function has_image( $image) {
  */
 function delete_image(string $image) :bool {
 
+
     if(empty($image)) {
         return false;
     }
 
-    $image = 'img/demo/avatars/' . $image;
+    $image = 'W:\domains\task2\img\demo\avatars\\' . $image;
 
     if(!is_readable($image)) {
         return false;
