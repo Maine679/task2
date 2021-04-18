@@ -330,8 +330,28 @@ function is_author(int $id_logged,int $idUser) :bool {
     return false;
 }
 
+/*
+ * Parameter: string $image
+ *
+ * Description: Проверяет, существование картинки на сервере и возможность её чтения.
+ *
+ *Return: boolean
+ *
+ * Мне не ясно что должна эта функция проверять? все данные уже получены про аватар пользователя, если проверять наличие картинки на диске,
+ * то зачем нужен ид? если проверять данные из базы, то мы их уже получили, иначе откуда у нас картинка?
+ */
+function has_image( $image) {
+    if(empty($image)) {
+        return false;
+    }
 
+    $image = 'img/demo/avatars/' . $image;
 
+    if(!is_readable($image)) {
+        return false;
+    }
+    return true;
+}
 
 
 

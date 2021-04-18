@@ -1,3 +1,41 @@
+<?php
+session_start();
+require_once "action/function.php";
+
+
+if(!is_authorized()) {
+    set_flash_message('danger','Сначала вы должны авторизоваться. Введите логин и пароль.');
+    redirect_to('page_login.php');
+}
+
+$user = get_user_by_email($_SESSION['user_email']);
+
+//Получаем идентификатор редактируемого пользователя.
+$idUser = $_GET['id'];
+
+
+if($user['user_status'] !== 'admin' && !is_author($user['id'],$idUser)) { //Проверка на всякий случай, вдруг пользователь попадёт по ссылке на эту страницу.
+    set_flash_message('danger','У вас недостаточно прав.');
+    redirect_to('users.php');
+}
+
+
+if(empty($idUser)) {
+    set_flash_message('danger','Требуется выбрать пользователя для редактирования');
+    redirect_to('users.php');
+}
+$arrUser = get_user_by_id($idUser);
+
+if($arrUser['error']) { //На случай если пользователь вдруг исчезнет, или если зададут ид через гет параметр которого нет в базе.
+    set_flash_message('danger','При получении пользователя возникла ошибка.');
+    redirect_to('users.php');
+}
+
+
+//Для передачи идентификатора в обработчик.
+$_SESSION['edit_user_id'] = $idUser;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,11 +60,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="page_login.php">Войти</a>-->
+<!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.php">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="users.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +76,11 @@
             </h1>
 
         </div>
-        <form action="">
+
+
+
+
+        <form action="action/action_media.php" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -48,12 +90,12 @@
                             </div>
                             <div class="panel-content">
                                 <div class="form-group">
-                                    <img src="img/demo/authors/josh.png" alt="" class="img-responsive" width="200">
+                                    <img src="img/demo/avatars/<? echo has_image((string) $arrUser['avatar']) ? $arrUser['avatar']:'avatar-admin-lg.png'; ?>" alt="<? echo $arrUser['name'] ?>" class="img-responsive" width="200">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-label" for="example-fileinput">Выберите аватар</label>
-                                    <input type="file" id="example-fileinput" class="form-control-file">
+                                    <input type="file" name="photo" id="example-fileinput" class="form-control-file">
                                 </div>
 
 

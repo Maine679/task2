@@ -102,7 +102,7 @@ $user = get_user_by_email($_SESSION['user_email']);
                         <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                             <div class="d-flex flex-row align-items-center">
                                 <span class="status status-<? echo $arrStatus[$item['status']]; ?> mr-3">
-                                    <span class="rounded-circle profile-image d-block " style="background-image:url('img/demo/avatars/<? echo $item['avatar'] ?>'); background-size: cover;"></span>
+                                    <span class="rounded-circle profile-image d-block " style="background-image:url('img/demo/avatars/<? echo has_image((string)$item['avatar']) ? $item['avatar']:'avatar-admin.png'; ?>'); background-size: cover;"></span>
                                 </span>
                                 <div class="info-card-text flex-1">
                                     <a href="" class="fs-xl text-truncate text-truncate-lg text-info" data-toggle="dropdown" aria-expanded="false">

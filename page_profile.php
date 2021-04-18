@@ -84,7 +84,7 @@ if($arrUser['error']) { //На случай если пользователь в
                             <div class="col-12">
                                 <div class="d-flex flex-column align-items-center justify-content-center p-4">
                                     <span class="status status-<? echo $arrStatus[$arrUser['status']]; ?> mr-3">
-                                        <img src="img/demo/avatars/<? echo $arrUser['avatar']; ?>" class="rounded-circle shadow-2 img-thumbnail" alt="<? echo $arrUser['name']; ?>">
+                                        <img src="img/demo/avatars/<? echo has_image((string)$arrUser['avatar']) ? $arrUser['avatar']:'avatar-admin-lg.png'; ?>" class="rounded-circle shadow-2 img-thumbnail" alt="<? echo $arrUser['name']; ?>">
                                     </span>
                                     <h5 class="mb-0 fw-700 text-center mt-3">
                                         <? echo $arrUser['name']; ?>
